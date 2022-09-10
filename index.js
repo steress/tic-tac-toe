@@ -1,14 +1,11 @@
 const buttons = document.querySelectorAll(".click");
 const restartBtn = document.querySelector(".restart");
-const message = document.querySelector("span")
-
+const message = document.querySelector("span");
 
 const playerFactory = (name, symbol) => {
     
-    return { name, symbol}
+    return {name, symbol};
 };
-
-
 
 const gameBoard = (() => {
 
@@ -27,13 +24,14 @@ const gameBoard = (() => {
     const renderBoard = () => {
         board.splice(position, 1, activePlayer.symbol);
         buttons[position].innerText = (`${board[position]}`);
-        console.log(activePlayer.symbol)
-        colorSymbol();
+        _colorSymbol();
     };
-    const colorSymbol = () => {
+
+    const _colorSymbol = () => {
         activePlayer.symbol == "x" ? buttons[position].classList.add("x") : buttons[position].classList.add("O")
-    }
-    return {renderBoard, getBoard, resetBoard}
+    };
+
+    return {getBoard, resetBoard, renderBoard};
 
 })();
 
@@ -46,16 +44,16 @@ const game = (() => {
     
     let board = gameBoard.getBoard();
 
-    function handleClick(e) {
+    function _handleClick(e) {
             round ++;
             position = e.target.id -1;
-            switchPlayer();
+            _switchPlayer();
             gameBoard.renderBoard();
-            playerTurn();
-            winning();    
+            _playerTurn();
+            _winning();    
         };
     
-    function winning () {
+    const _winning = () => {
         i = board.map((e, i) => e === 'x' ? i : []);
         q = board.map((e, q) => e === 'o' ? q : []);
         
@@ -63,23 +61,23 @@ const game = (() => {
         winO = winConditions.filter(a => a.reduce((r, o) => r + q.includes(o), 0)==3);
 
         if (winX.length == 1) {
-            removeEvents();
-            message.innerText = "Winner is X!"
+            _removeEvents();
+            message.innerText = "Winner is X!";
         } else if (winO.length == 1) {
-            removeEvents();
-            message.innerText = "Winner is O!"
+            _removeEvents();
+            message.innerText = "Winner is O!";
         } else if (winX.length == 2) {
-            message.innerText = "Winner is X"
+            message.innerText = "Winner is X";
         } else if (round == 9 && winX.length == 0) {
-            message.innerText = "It's a Draw"
+            message.innerText = "It's a Draw";
         }
     };
     
-    const switchPlayer = () => {
+    const _switchPlayer = () => {
             round % 2 == 0 ? activePlayer = player2 : activePlayer = player1; 
         };
 
-    const playerTurn = () => {
+    const _playerTurn = () => {
             round <= 8 && activePlayer == player2 ? message.innerText = `Player X's turn` : message.innerText = `Player O's turn`
         };
         
@@ -94,23 +92,23 @@ const game = (() => {
 			[2, 4, 6],
 		];
 
-    const removeClass = () => {
+    const _removeClass = () => {
         Array.from(buttons).forEach((element) => element.classList.remove("x"));
         Array.from(buttons).forEach((element) => element.classList.remove("O"));
     };
 
-    const addEvents = () => {
-        Array.from(buttons).forEach((element) => element.addEventListener("click", handleClick, {once : true}));
+    const _addEvents = () => {
+        Array.from(buttons).forEach((element) => element.addEventListener("click", _handleClick, {once : true}));
     };
 
-    const removeEvents = () => {
-        Array.from(buttons).forEach((element) => element.removeEventListener("click", handleClick, {once : true}));
+    const _removeEvents = () => {
+        Array.from(buttons).forEach((element) => element.removeEventListener("click", _handleClick, {once : true}));
     };
 
     const restart = () => {
-            removeEvents();
-            removeClass();
-            addEvents();
+            _removeEvents();
+            _removeClass();
+            _addEvents();
             Array.from(buttons).forEach((element) => element.innerText = "");
             gameBoard.resetBoard()
             round = 0;
@@ -119,11 +117,10 @@ const game = (() => {
             };
 
     buttons.forEach(button => {
-                button.addEventListener("click", handleClick, {once : true});
+                button.addEventListener("click", _handleClick, {once : true});
             });
 
     restartBtn.addEventListener("click", restart);
 
 })();
-
 
